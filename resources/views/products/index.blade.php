@@ -9,4 +9,5 @@
             @endforeach
         </div>
     </div>
+    <div class="mb-6">{{ $products->links() }}</div>
 </x-app-layout>

@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -23,27 +24,24 @@ class ProductController extends Controller
 
         if ($category && !$subcategory) {
             $products = Product::where('category', '=', $category)
-                                    ->with('reviews')
                                     ->withAvg('reviews','rating')
                                     ->withCount('reviews')
                                     ->filter($filter)
-                                    ->get();
+                                    ->paginate(9);
         }
         elseif ($category && $subcategory) {
             $products = Product::where('category', '=', $category)
                                     ->where('subcategory', '=', $subcategory)
-                                    ->with('reviews')
                                     ->withAvg('reviews','rating')
                                     ->withCount('reviews')
                                     ->filter($filter)
-                                    ->get();
+                                    ->paginate(9);
         }
         else {
             $products = Product::filter($filter)
-                                    ->with('reviews')
                                     ->withAvg('reviews','rating')
                                     ->withCount('reviews')
-                                    ->get();
+                                    ->paginate(9);
         }
 
         return view('products.index', ['products' => $products]);

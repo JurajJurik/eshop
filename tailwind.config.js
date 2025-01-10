@@ -12,14 +12,25 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: [
+                    'Figtree',
+                    {
+                        fontFeatureSettings: '"liga" 1, "kern" 1',
+                        fontVariationSettings: '"wght" 600',
+                        appearance: 'auto'
+                    },
+                    ...defaultTheme.fontFamily.sans
+                ]
             },
             colors: {
                 transparent: 'transparent',
                 current: 'currentColor',
                 'beige': '#ede8d0',
                 'darkerBeige': '#c9c5b1'
-              },
+            },
+            fontSize: {
+                '2xs': '0.6rem',
+            },
         },
     },
 

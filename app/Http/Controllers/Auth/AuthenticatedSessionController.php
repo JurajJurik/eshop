@@ -28,7 +28,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        if (session('cart'))
+        {
+            dump();
+        }
+
+        return redirect()->intended(route('products.index', absolute: false))->with('success', 'You were successfully logged-in!');
     }
 
     /**
@@ -42,6 +47,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('products.index');
     }
 }

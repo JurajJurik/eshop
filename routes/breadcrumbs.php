@@ -6,7 +6,7 @@ use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 use Illuminate\Support\Str;
 
-//home
+// Home
 Breadcrumbs::for('home', function (BreadcrumbTrail $trail) {
      $trail->push('Home', route('home'));
 });
@@ -31,16 +31,47 @@ Breadcrumbs::for('products.index', function (BreadcrumbTrail $trail) {
 // Product show
 Breadcrumbs::for('products.show', function (BreadcrumbTrail $trail, Product $product) {
     $trail->parent('products.index', $product);
-    $trail->push(Str::ucfirst($product->category), route('products.index', ['category' => $product->category]));
+    $trail->push(Str::ucfirst($product['category']), route('products.index', ['category' => $product->category]));
     $trail->push(Str::ucfirst($product->subcategory), route('products.index', ['category' => $product->category, 'subcategory' => $product->subcategory]));
-    $trail->push($product->name, route('products.show', $product));
+    $trail->push($product->name);
 });
 
 // Reviews index
 Breadcrumbs::for('products.reviews.index', function (BreadcrumbTrail $trail, Product $product) {
     $trail->parent('products.index', $product);
-    $trail->push(Str::ucfirst($product->category), route('products.index', ['category' => $product->category]));
+    $trail->push(Str::ucfirst($product['category']), route('products.index', ['category' => $product->category]));
+    $trail->push(Str::ucfirst($product->subcategory), route('products.index', ['category' => $product->category, 'subcategory' => $product->subcategory]));
+    $trail->push($product->name, route('products.show', $product));
+    $trail->push('Reviews');
+});
+
+// Reviews create
+Breadcrumbs::for('products.reviews.create', function (BreadcrumbTrail $trail, Product $product) {
+    $trail->parent('products.index', $product);
+    $trail->push(Str::ucfirst($product['category']), route('products.index', ['category' => $product->category]));
     $trail->push(Str::ucfirst($product->subcategory), route('products.index', ['category' => $product->category, 'subcategory' => $product->subcategory]));
     $trail->push($product->name, route('products.show', $product));
     $trail->push('Reviews', route('products.reviews.index', $product));
+    $trail->push('Create');
+});
+
+// Login
+Breadcrumbs::for('login', function (BreadcrumbTrail $trail) {
+    $trail->parent('home');
+    $trail->push('Login', route('login'));
+});
+
+// Register
+Breadcrumbs::for('register', function (BreadcrumbTrail $trail) {
+    $trail->parent('home');
+    $trail->push('Register', route('register'));
+});
+
+// Cart
+Breadcrumbs::for('cart', function (BreadcrumbTrail $trail) {
+    $trail->parent('home');
+    $trail->push('Cart');
+    $trail->push('Address');
+    $trail->push('Delivery');
+    $trail->push('Payment');
 });

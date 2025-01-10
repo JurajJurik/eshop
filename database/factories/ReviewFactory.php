@@ -21,10 +21,11 @@ class ReviewFactory extends Factory
 
         return [
             'product_id' => null,
-            'review' => fake()->paragraph(),
+            'description' => fake()->paragraph(),
             'rating' => fake()->numberBetween(1, 5),
             'advantages' => json_encode(fake()->words(rand(0,5))),
             'disadvantages' => json_encode(fake()->words(rand(0,5))),
+            'helpful' => fake()->numberBetween(2,15),
             'created_at' => $createdAt,
             'updated_at' => $updatedAt
         ];

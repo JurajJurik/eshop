@@ -12,11 +12,11 @@
                   
             </div>
         </button>
-    </div>
+    </div>   
 
-    <div id="dropdown-{{ $category->id }}" class="hidden">
+    <div id="dropdown-{{ $category->id }}" class="{{ Request::get('category') ==  $category->name ? '' : 'hidden'  }}">
         @foreach ( $category->subCategory as $subcategory)
-            <x-dropdown :subcategory='$subcategory'/>
+            <x-dropdown :category='$category->name' :subcategory='$subcategory->name'/>
         @endforeach        
     </div>
 @endforeach

@@ -9,14 +9,15 @@ use App\Models\SubCategory;
 
 class Dropdown extends Component
 {
-    //public $subcategory;
     /**
      * Create a new component instance.
      */
     public function __construct(
+        public $category,
         public $subcategory,
     )
     {
+        $this->category = $category;
         $this->subcategory = $subcategory;
     }
 

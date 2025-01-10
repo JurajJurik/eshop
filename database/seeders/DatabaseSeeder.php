@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        User::factory(100)->create();
 
         // User::factory()->create([
         //     'name' => 'Test User',
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         $icons = Product::$icons;
         $images = Product::$images;
         $vat = 1.23; //23%
-        $numberOfProducts = 10;
+        $numberOfProducts = 200;
 
         foreach ($categories as $category) {
             $icon = $icons[$category];
