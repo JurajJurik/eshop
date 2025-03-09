@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Cart;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +32,20 @@ class AuthenticatedSessionController extends Controller
 
         if (session('cart'))
         {
-            dump();
+            $user_id = Auth::user()->id;
+            $productsInsert = [];
+            foreach (session('cart') as $key => $value) {
+                for ($i=1; $i <= $value['quantity']; $i++) { 
+                    array_push($productsInsert, [
+                        'user_id' => $user_id, 
+                        'product_id' => $key,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now()
+                    ]);
+                }
+            }
+            Cart::insert($productsInsert);
+            session()->forget('cart');
         }
 
         return redirect()->intended(route('products.index', absolute: false))->with('success', 'You were successfully logged-in!');
@@ -47,6 +62,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('products.index');
+        return redirect(route('products.index'));
     }
 }

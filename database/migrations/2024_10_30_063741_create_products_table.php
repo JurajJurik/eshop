@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('manufacturer');
             $table->string('platform');
             $table->string('serial_number');
+            $table->unsignedInteger('price_without_VAT');
             $table->unsignedInteger('price');
-            $table->unsignedInteger('price_with_VAT');
             $table->text('image')->nullable();
             $table->string('category');
             $table->string('subcategory');

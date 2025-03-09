@@ -72,6 +72,24 @@ Breadcrumbs::for('cart', function (BreadcrumbTrail $trail) {
     $trail->parent('home');
     $trail->push('Cart');
     $trail->push('Address');
-    $trail->push('Delivery');
+    $trail->push('Delivery & Payment method');
+    $trail->push('Payment');
+});
+
+// Order - Address
+Breadcrumbs::for('order-address', function (BreadcrumbTrail $trail) {
+    $trail->parent('home');
+    $trail->push('Cart', route('cart.index'));
+    $trail->push('Address');
+    $trail->push('Delivery & Payment method');
+    $trail->push('Payment');
+});
+
+// Order - Delivery
+Breadcrumbs::for('order-delivery', function (BreadcrumbTrail $trail) {
+    $trail->parent('home');
+    $trail->push('Cart', route('cart.index'));
+    $trail->push('Address', route('order.address'));
+    $trail->push('Delivery & Payment method');
     $trail->push('Payment');
 });

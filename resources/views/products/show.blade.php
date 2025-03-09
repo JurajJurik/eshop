@@ -10,9 +10,10 @@
                 <div class="w-full">{!!html_entity_decode($product->image)!!}</div>
             </div>
             <div class="flex flex-row justify-evenly my-4">
-                <div class="flex flex-col min-w-36 text-center">
+                <div class="flex flex-col min-w-48 text-center">
                     <div class="w-full h-4 bg-red-500 rounded-t-md"></div>
                     <div class="w-full px-4 py-2 bg-yellow-300 rounded-b-md">{{number_format($product->price,2,',',' ')}} €</div>
+                    <div class="mt-2 text-sm text-gray-400">without VAT: {{ number_format($product->price_without_VAT,2,',',' ')}} €</div>
                 </div>
                 <div class="flex text-center">
                     <a href="#">

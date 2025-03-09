@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Address;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Profile;
 use App\Models\Review;
 use App\Models\SubCategory;
 use App\Models\User;
@@ -19,7 +21,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(100)->create();
+        $users = User::factory(100)->create();
+
+        foreach ($users as $user) {
+            Address::factory()->create([
+                'user_id' => $user->id
+            ]);
+            Profile::factory()->create([
+                'user_id' => $user->id
+            ]);
+        }
 
         // User::factory()->create([
         //     'name' => 'Test User',
@@ -94,14 +105,14 @@ class DatabaseSeeder extends Seeder
             Product::factory()->create([
                 'category' => $category->name,
                 'subcategory' => $subCategory->inRandomOrder()->first()->name,
-                'price' => $price,
-                'price_with_VAT' => $price * $vat,
+                'price_without_VAT' => $price,
+                'price' => $price * $vat,
                 'image' => $image[0]
             ]); 
         }
 
         $products = Product::all();           
-        $products->each(function ($product, $index )use ($products)  {
+        $products->each(function ($product, $index ) use ($products)  {
             $i = $index;
             $num = $products->count();
 

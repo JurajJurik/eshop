@@ -84,6 +84,11 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function cart()
+    {
+        return $this->belongsTo(Cart::class);
+    }
+
     
     public function scopeFilter(Builder | QueryBuilder $query, array $filter): Builder | QueryBuilder 
     {

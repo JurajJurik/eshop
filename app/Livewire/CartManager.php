@@ -6,45 +6,42 @@ use Livewire\Component;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Locked;
+use App\Models\Cart;
 
 class CartManager extends Component
 {
     #[Locked]
     public Product $product;
 
-    //public $cartSize;
-
-    //protected $listeners = ['productAddedToCart' => 'render'];
-
     public function addToCart(Product $product)
     {
-        //dump($product);
-        //Check if user is logged
-        if (Auth::check()) {
-            // saving products into cart db
-            // ...
-            return redirect()->back()->with('success', 'Product was added to cart.');
-        }
+        if (!Auth::check()) {
+            // Save cart information into session storage for non-logged users
+            $cart = session()->get('cart', []);
+            if (isset($cart[$product->id])) {
+                $quantity = $cart[$product->id]['quantity'];
+                $cart[$product->id] = [
+                    'quantity' => $quantity
+                ];
+            }
+            else {
+                $cart[$product->id] = [
+                    'quantity' => 1
+                ];
+            }
 
-        // Save cart information into session storage for non-logged users
-        $cart = session()->get('cart', []);
-        if (isset($cart[$product->id])) {
-            //dump('test');
-            $quantity = $cart[$product->id]['quantity'];
-            $cart[$product->id] = [
-                'quantity' => $quantity
-            ];
-        }
-        else {
-            $cart[$product->id] = [
-                'quantity' => 1
-            ];
-        }
+            session()->put('cart', $cart);
 
-        session()->put('cart', $cart);
-
-        //return redirect()->back()->with('success', 'Product was added to cart.');
-        $this->dispatch('productAddedToCart');
+            $this->dispatch('productAddedToCart');
+        }
+        else
+        {
+            Cart::create([
+                'user_id' => Auth::user()->id,
+                'product_id' => $product->id
+            ]);
+            $this->dispatch('productAddedToCart');
+        }
     }
 
     public function render()

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
@@ -14,8 +15,16 @@ use App\Http\Controllers\MailController;
 Route::get('/', fn () => to_route('products.index'))->name('home');
 Route::resource('products', ProductController::class)->only(['index','show']);
 Route::resource('products.reviews', ReviewController::class)->only(['index','create']);
-Route::resource('products', ProductController::class)->only(['index','show']);
 Route::resource('cart', CartController::class)->only(['index','update']);
+//Route::resource('order', OrderController::class)->only(['index','store','update']);
+Route::get('order/address', [OrderController::class, 'create'])
+        ->name('address');
+Route::post('order/address', [OrderController::class, 'validateAddress'])
+->name('order.address');
+// Route::post('order/address', [OrderController::class, 'store'])
+// ->name('address.store');
+Route::get('order/delivery', [OrderController::class, 'edit'])
+->name('order.delivery');
 
 Route::get('send-mail', [MailController::class, 'index']);
 
