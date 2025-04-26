@@ -14,6 +14,10 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    public static array $paymentMethod = ['credit or debit card', 'google pay', 'account transfer', 'cryptocurrency', 'cash on delivery'];
+
+    public static array $deliveryMethod = ['delivery box', 'personal pickup - shop', 'personal pickup - partner shop', 'home delivery'];
+
     /**
      * The attributes that are mass assignable.
      *

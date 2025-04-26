@@ -52,7 +52,10 @@ class OrderController extends Controller
             'shipping_city' => 'exclude_unless:different_address,true|string|max:255',
             'shipping_country' => 'exclude_unless:different_address,true|string|max:255',
         ]);
+
         return view('orders.delivery', ['validatedAddress' => $validatedData]);
+        //return redirect()->route('jobAds.show', $jobAd)->with('success', 'Job application submitted.');
+        //return redirect()->route('order.delivery', ['validatedAddress' => $validatedData]);
     }
 
     /**
@@ -142,9 +145,9 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, Order $order)
     {
-        //
+        //return view('orders.delivery');
     }
 
     /**

@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Address;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\Profile;
 use App\Models\Review;
 use App\Models\SubCategory;
 use App\Models\User;
@@ -25,9 +24,6 @@ class DatabaseSeeder extends Seeder
 
         foreach ($users as $user) {
             Address::factory()->create([
-                'user_id' => $user->id
-            ]);
-            Profile::factory()->create([
                 'user_id' => $user->id
             ]);
         }

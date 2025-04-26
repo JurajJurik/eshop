@@ -89,7 +89,7 @@ Breadcrumbs::for('order-address', function (BreadcrumbTrail $trail) {
 Breadcrumbs::for('order-delivery', function (BreadcrumbTrail $trail) {
     $trail->parent('home');
     $trail->push('Cart', route('cart.index'));
-    $trail->push('Address', route('order.address'));
+    $trail->push('Address', route('address'));
     $trail->push('Delivery & Payment method');
     $trail->push('Payment');
 });
