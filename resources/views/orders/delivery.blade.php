@@ -1,12 +1,15 @@
 <x-app-layout>
     <div>{{ Breadcrumbs::render('order-delivery') }}</div>
 
-    <form action="" method="POST" class="mt-6 relative">
+    @dd($validatedAddress)
+
+    <form action="{{ route('order.validateOrder') }}" method="POST" class="mt-6 relative">
         @csrf
         <div class="space-y-6">
             <div class="space-y-2">
                 <h3 class="text-gray-700 font-bold text-base">Select payment method:</h3>
                 <select class="bg-transparent border-2 rounded-md" name="paymentMethod">
+                    
                     <option  value="">-- NONE --</option>
                     @foreach (\App\Models\User::$paymentMethod as $paymentMethod)
                         @if (Auth::user()->payment_method == $paymentMethod)
@@ -19,7 +22,7 @@
             </div>
             <div class="space-y-2">
                 <h3 class="text-gray-700 font-bold text-base">Choose delivery method:</h3>
-                <select class="bg-transparent border-2 rounded-md" name="paymentMethod">
+                <select class="bg-transparent border-2 rounded-md" name="deliveryMethod">
                     <option  value="">-- NONE --</option>
                     @foreach (\App\Models\User::$deliveryMethod as $deliveryMethod)
                         @if (Auth::user()->delivery_method == $deliveryMethod)
@@ -33,10 +36,19 @@
         </div>
         {{-- Buttons --}}
         <div class="flex justify-between mt-6">
-            {{-- <a href="{{ route('address') }}" class="p-2 rounded-md bg-gray-200 text-sm font-semibold shadow-sm hover:bg-gray-300 border-zinc-400 border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 flex items-center">Back to Address</a> --}}
-            {{-- <a href="{{ route('address.store') }}" class="p-2 rounded-md bg-sky-400 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 flex items-center">
-            <button type="submit">Continue</button>
-            </a> --}}
-            <button type="submit" class="p-2 rounded-md bg-sky-400 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 flex items-center">Continue
+            <a href="{{ route('address') }}" class="p-2 rounded-md bg-gray-200 text-sm font-semibold shadow-sm hover:bg-gray-300 border-zinc-400 border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 flex items-center">
+                Back to Address
+            </a>
+            <button type="submit" class="p-2 rounded-md bg-sky-400 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 flex items-center">
+                Finish order
+            </button>
+        </div>
     </form>
 </x-app-layout>
+
+{{-- <form action="{{ route('order.xxx') }}" method="POST" class="mt-6 relative">
+    @csrf
+    <button type="submit" class="p-2 rounded-md bg-sky-400 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 flex items-center">
+        Finish order
+    </button>
+</form> --}}

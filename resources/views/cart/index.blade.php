@@ -1,5 +1,8 @@
 <x-app-layout>
     <div>{{ Breadcrumbs::render('cart') }}</div>
+
+    @dd(session())
+
     @forelse ($products as $product)
         <x-cart-product-card :product='$product' :quantity='$quantity[$product->id]["quantity"]'/>
     @empty
