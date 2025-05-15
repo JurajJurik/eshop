@@ -1,7 +1,7 @@
 <x-app-layout>
     <div>{{ Breadcrumbs::render('order-address') }}</div>
 
-    <form action="{{ route('order.delivery') }}" method="POST" class="mt-6 relative" novalidate>
+    <form action="{{ route('order.address') }}" method="POST" class="mt-6 relative" novalidate>
         @csrf
         <div class="absolute top-0 right-0 text-sm text-gray-500">
             <span class="">* required fields</span>

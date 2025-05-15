@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 
 class OrderController extends Controller
 {
@@ -23,8 +25,7 @@ class OrderController extends Controller
      * Show the form for fulfilling order address.
      */
     public function address()
-    {
-        
+    { 
         if (Auth::check()) {
             return view('orders.address',['user' => Auth::user()->load('address')]);
         }
@@ -32,33 +33,53 @@ class OrderController extends Controller
     }
 
     /**
-     * Validate order address and send to order delivery page.
+     * Validate order address
      */
     public function validateAddress(Request $request)
     {
-        dd($request);
-        // $validatedData = $request->validate([
-        //     'first_name' => 'required|string|max:255',
-        //     'last_name' => 'required|string|max:255',
-        //     'email' => 'required|email',
-        //     'phone_number' => 'required|regex:/^\+?\d+$/|max:255',
-        //     'street' => 'required|string|max:255',
-        //     'street_number' => 'required|string|regex:/^[a-zA-Z0-9\/]+$/|max:255',
-        //     'post_code' => 'required|string|regex:/^[0-9-]+$/|max:255',
-        //     'city' => 'required|string|max:255',
-        //     'country' => 'required|string|max:255',
-        //     'shipping_street' => 'exclude_unless:different_address,true|string|max:255',
-        //     'shipping_street_number' => 'exclude_unless:different_address,true|string|regex:/^[a-zA-Z0-9\/]+$/|max:255',
-        //     'shipping_post_code' => 'exclude_unless:different_address,true|string|regex:/^[0-9-]+$/|max:255',
-        //     'shipping_city' => 'exclude_unless:different_address,true|string|max:255',
-        //     'shipping_country' => 'exclude_unless:different_address,true|string|max:255',
-        // ]);
+        $validatedData = $this->validation($request);
 
-        //$validatedData = $this->validation($request);
+        session()->put('order_address', $validatedData);
 
-        return view('orders.delivery', ['validatedAddress' => $this->validation($request)]);
-        //return redirect()->route('jobAds.show', $jobAd)->with('success', 'Job application submitted.');
-        //return redirect()->route('order.delivery', ['validatedAddress' => $validatedData]);
+        //return view('orders.delivery', ['validatedAddress' => $validatedData]);
+        return redirect()->route('delivery');
+    }
+
+    /**
+     * Show the form for fulfilling order delivery
+     */
+    public function delivery()
+    {
+        
+        // if (Auth::check()) {
+        //     return view('orders.address',['user' => Auth::user()->load('address')]);
+        // }
+        return view('orders.delivery');
+    }
+
+    /**
+     * Validate payment and delivery method
+     */
+    public function validateMethods(Request $request)
+    {
+        $validatedData = $request->validate([
+            'payment_method' => 'required|in:'  . implode(',', User::$paymentMethod),
+            'delivery_method' => 'required|in:'  . implode(',', User::$deliveryMethod),
+        ]);
+
+        session()->put('order_methods', $validatedData);
+
+        return redirect()->route('summary');
+    }
+
+    /**
+     * Show summary of the order
+     */
+    public function summary(Request $request)
+    {
+
+        return view('orders.summary');
+
     }
 
     /**
@@ -66,24 +87,24 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        // $validatedData = $request->validate([
-        //     'first_name' => 'required|string|max:255',
-        //     'last_name' => 'required|string|max:255',
-        //     'email' => 'required|email',
-        //     'phone_number' => 'required|regex:/^\+?\d+$/|max:255',
-        //     'street' => 'required|string|max:255',
-        //     'street_number' => 'required|string|regex:/^[a-zA-Z0-9\/]+$/|max:255',
-        //     'post_code' => 'required|string|regex:/^[0-9-]+$/|max:255',
-        //     'city' => 'required|string|max:255',
-        //     'country' => 'required|string|max:255',
-        //     'shipping_street' => 'exclude_unless:different_address,true|string|max:255',
-        //     'shipping_street_number' => 'exclude_unless:different_address,true|string|regex:/^[a-zA-Z0-9\/]+$/|max:255',
-        //     'shipping_post_code' => 'exclude_unless:different_address,true|string|regex:/^[0-9-]+$/|max:255',
-        //     'shipping_city' => 'exclude_unless:different_address,true|string|max:255',
-        //     'shipping_country' => 'exclude_unless:different_address,true|string|max:255',
-        // ]);
+        $validatedData = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'phone_number' => 'required|regex:/^\+?\d+$/|max:255',
+            'street' => 'required|string|max:255',
+            'street_number' => 'required|string|regex:/^[a-zA-Z0-9\/]+$/|max:255',
+            'post_code' => 'required|string|regex:/^[0-9-]+$/|max:255',
+            'city' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'shipping_street' => 'exclude_unless:different_address,true|string|max:255',
+            'shipping_street_number' => 'exclude_unless:different_address,true|string|regex:/^[a-zA-Z0-9\/]+$/|max:255',
+            'shipping_post_code' => 'exclude_unless:different_address,true|string|regex:/^[0-9-]+$/|max:255',
+            'shipping_city' => 'exclude_unless:different_address,true|string|max:255',
+            'shipping_country' => 'exclude_unless:different_address,true|string|max:255',
+        ]);
 
-        $validatedData = $this->validation($request);
+        //$validatedData = $this->validation($request);
 
         $cartProducts = Cart::where('user_id', '=', Auth::user()->id)
                             ->groupBy('product_id')
@@ -165,17 +186,6 @@ class OrderController extends Controller
             'shipping_city' => 'exclude_unless:different_address,true|string|max:255',
             'shipping_country' => 'exclude_unless:different_address,true|string|max:255',
         ]);
-    }
-
-    /**
-     * Validate order properties before payment
-     */
-    public function validateOrder(Request $request)
-    {
-        //return redirect()->route('home');
-
-        //return view('orders.payment');
-
     }
 
     /**
