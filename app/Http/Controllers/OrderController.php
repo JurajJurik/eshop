@@ -26,6 +26,9 @@ class OrderController extends Controller
      */
     public function address()
     { 
+        if (!session()->get('cart')) {
+            return redirect()->route('cart.index')->with('warning', 'Your cart is empty! Add product, please.');
+        }
         if (Auth::check()) {
             return view('orders.address',['user' => Auth::user()->load('address')]);
         }
@@ -50,7 +53,9 @@ class OrderController extends Controller
      */
     public function delivery()
     {
-        
+        if (!session()->get('cart')) {
+            return redirect()->route('cart.index')->with('warning', 'Your cart is empty! Add product, please.');
+        }   
         // if (Auth::check()) {
         //     return view('orders.address',['user' => Auth::user()->load('address')]);
         // }
@@ -67,6 +72,42 @@ class OrderController extends Controller
             'delivery_method' => 'required|in:'  . implode(',', User::$deliveryMethod),
         ]);
 
+        switch ($validatedData['payment_method']) {
+            case 'credit or debit card':
+                $payment_fee = 0;
+                break;
+            case 'google pay':
+                $payment_fee = 0;
+                break;
+            case 'account transfer':
+                $payment_fee = 0;
+                break;
+            case 'cryptocurrency':
+                $payment_fee = 0;
+                break;
+            case 'cash on delivery':
+                $payment_fee = 1;
+                break;
+        }
+
+        switch ($validatedData['delivery_method']) {
+            case 'delivery box':
+                $delivery_fee = 3;
+                break;
+            case 'personal pickup - shop':
+                $delivery_fee = 0;
+                break;
+            case 'personal pickup - partner shop':
+                $delivery_fee = 0;
+                break;
+            case 'home delivery':
+                $delivery_fee = 4;
+                break;
+        }
+
+        $validatedData['payment_fee'] = $payment_fee;
+        $validatedData['delivery_fee'] = $delivery_fee;
+
         session()->put('order_methods', $validatedData);
 
         return redirect()->route('summary');
@@ -77,8 +118,24 @@ class OrderController extends Controller
      */
     public function summary(Request $request)
     {
+        if (!session()->get('cart')) {
+            return redirect()->route('cart.index')->with('warning', 'Your cart is empty! Add product, please.');
+        }
 
-        return view('orders.summary');
+        $productQuantities = array();
+        foreach (session()->get('cart') as $id => $quantity) {
+            $productIds[] = $id;
+            $productQuantities[$id] = $quantity;
+        }
+        $products = Product::whereIn('id', $productIds)->get(); 
+
+        $orderData = new \stdClass();
+        $orderData->products = $products;
+        $orderData->quantities = $productQuantities;
+        $orderData->address = session()->get('order_address');
+        $orderData->methods = session()->get('order_methods');
+
+        return view('orders.summary', ['orderData' => $orderData]);
 
     }
 
